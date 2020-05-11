@@ -3,21 +3,39 @@ const ovly = {
 		
 		_resultado: null,
 		
-		domain: "api/",
+		domain: "https://api.exchangeratesapi.io/",
+		
+		resultado: null,
+		
+		chamaAPI: function() {
+			const sURL = "https://api.exchangeratesapi.io/latest";
+			var oRequest = new XMLHttpRequest()
+			oRequest.addEventListener("load", ovly.conversor.carregaListaDeMoedas)
+			oRequest.open("GET", sURL)
+			oRequest.send()
+			console.log("Já passou pelo send")
+		},	
 		
 		carregaListaDeMoedas: function(){
+			console.log("caiu aqui")
+			var oResponse = this;
+			var sResponseBody = oResponse.responseText;
+			resultado = JSON.parse(sResponseBody);	
+			console.log(resultado);
+			console.log(this.domain );
 			
-			function cb(resultado){
+		//	function cb(resultado){
 				for(moeda in resultado.rates){
 					var o = new Option(moeda, moeda);
 					/// jquerify the DOM object 'o' so we can use the html method
 					$(o).html(moeda);
 					$("#moeda_destino").append(o);
 				}
-			}
-			$.get(this.domain + "latest", cb);
+		//	}
+		//$.get(this.domain + "latest", cb);
 		},
 		chamarAPI: function (e) {
+			console.log(this.domain);
 			var dCotacao = $("#data_cotacao").val();
 			var endpoint = this.domain + (dCotacao?  dCotacao : "latest");
 			var oParametros = {
@@ -63,5 +81,6 @@ const ovly = {
 };
 
 window.onload = function(){
-	ovly.conversor.carregaListaDeMoedas();
+//	ovly.conversor.carregaListaDeMoedas();
+	ovly.conversor.chamaAPI();
 }
